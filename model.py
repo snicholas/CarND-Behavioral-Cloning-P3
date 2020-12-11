@@ -82,11 +82,17 @@ model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
 
 ch, row, col = 3, 90, 320  # Trimmed image format
 
+# first convultional layer with 3x3 filter and depth 64 padding same,
+# followed by a max pooling layer with size 2x2 and 
+# a droput with 10% probability. The activation it's relu
 model.add(Conv2D(64,3,input_shape=(row,col,ch),padding="same"))
 model.add(MaxPooling2D((2, 2)))
 model.add(Dropout(0.1))
 model.add(Activation('relu'))
 
+# second and third convultional layer with 5x5 filter and depth 128 padding same,
+# followed by a max pooling layer with size 2x2 and 
+# a droput with 10% probability. The activation it's relu
 model.add(Conv2D(128,5,padding="same"))
 model.add(MaxPooling2D((2, 2)))
 model.add(Dropout(0.1))
@@ -97,6 +103,9 @@ model.add(MaxPooling2D((2, 2)))
 model.add(Dropout(0.1))
 model.add(Activation('relu'))
 
+# fourth and fifth convultional layer with 5x5 filter and depth 64 padding same,
+# followed by a max pooling layer with size 2x2 and 
+# a droput with 10% probability. The activation it's relu
 model.add(Conv2D(64,5,padding="same"))
 model.add(MaxPooling2D((2, 2)))
 model.add(Dropout(0.1))
@@ -107,6 +116,8 @@ model.add(MaxPooling2D((2, 2)))
 model.add(Dropout(0.1))
 model.add(Activation('relu'))
 
+# next the output from the convulation layers it's flattened and passed through 
+# 3 fully connected layer with size 128 each with activation relu
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Activation('relu'))
@@ -114,6 +125,7 @@ model.add(Dense(128))
 model.add(Activation('relu'))
 model.add(Dense(128))
 model.add(Activation('relu'))
+# the last layer is a dense layer with size 1
 model.add(Dense(1))
 
 

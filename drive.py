@@ -50,7 +50,9 @@ controller.set_desired(set_speed)
 
 @sio.on('telemetry')
 def telemetry(sid, data):
+    print("telemetry data, sid", data, sid)
     if data:
+        print("data, sid", data, sid)
         # The current steering angle of the car
         steering_angle = data["steering_angle"]
         # The current throttle of the car
@@ -85,6 +87,7 @@ def connect(sid, environ):
 
 
 def send_control(steering_angle, throttle):
+    print("send_control")
     sio.emit(
         "steer",
         data={

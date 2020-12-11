@@ -5,7 +5,6 @@ import numpy as np
 import sklearn
 from  math import ceil
 import tensorflow as tf
-# os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 from keras.models import Sequential, Model
 from keras.layers import Cropping2D, Lambda, Conv2D, Activation, Flatten, Dense, Dropout, MaxPooling2D
 
@@ -21,17 +20,18 @@ def generator(samples, batch_size=32):
             for batch_sample in batch_samples:
                 if str(batch_sample[3])!='':
 
-                    name = '../../datalocal/IMG/'+batch_sample[0].split('\\')[-1]
+                    name = '/opt/tmp/IMG/'+batch_sample[0].split('\\')[-1]
+                    
                     center_image = cv2.imread(name)
                     center_flipped = cv2.flip(center_image,1)
                     center_angle = float(batch_sample[3])                
-
-                    name = '../../datalocal/IMG/'+batch_sample[1].split('\\')[-1]
+                    
+                    name = '/opt/tmp/IMG/'+batch_sample[1].split('\\')[-1]
                     left_image = cv2.imread(name)
                     left_flipped = cv2.flip(left_image,1)
                     left_angle = center_angle + 0.2
 
-                    name = '../../datalocal/IMG/'+batch_sample[2].split('\\')[-1]
+                    name = '/opt/tmp/IMG/'+batch_sample[2].split('\\')[-1]
                     right_image = cv2.imread(name)
                     right_flipped = cv2.flip(right_image,1)
                     right_angle = float(batch_sample[3]) - 0.2
@@ -62,7 +62,7 @@ def generator(samples, batch_size=32):
 
 
 samples = []
-with open('../../datalocal/driving_log.csv') as csvfile:
+with open('/opt/tmp/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     next(reader)
     for line in reader:
@@ -112,7 +112,7 @@ model.add(Dense(128))
 model.add(Activation('relu'))
 model.add(Dense(128))
 model.add(Activation('relu'))
-model.add(Dense(64))
+model.add(Dense(128))
 model.add(Activation('relu'))
 model.add(Dense(1))
 
@@ -125,25 +125,9 @@ validation_generator = generator(validation_samples, batch_size=batch_size)
 
 model.compile(loss='mse', optimizer='adam')
 model.fit_generator(train_generator, 
-            steps_per_epoch=ceil(len(train_samples)/(6*batch_size)), 
+            steps_per_epoch=ceil(len(train_samples)/batch_size), 
             validation_data=validation_generator, 
-            validation_steps=ceil(len(validation_samples)/(6*batch_size)), 
-            epochs=5, verbose=1)
+            validation_steps=ceil(len(validation_samples)/batch_size), 
+            epochs=10, verbose=1)
 
 model.save('model.h5')
-'''
-
-
-# compile and train the model using the generator function
-
-
-
-
-# Preprocess incoming data, centered around zero with small standard deviation 
-model.add(Lambda(lambda x: x/127.5 - 1.,
-        input_shape=(ch, row, col),
-        output_shape=(ch, row, col)))
-model.add(... finish defining the rest of your model architecture here ...)
-
-
-'''
